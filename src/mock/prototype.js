@@ -29,12 +29,17 @@ export default function mockPrototype(win) {
     return getContext2D.internal.call(this, type);
   });
 
-  if (!jest.isMockFunction(win.HTMLCanvasElement.prototype.getContext)) {
-    getContext2D.internal = win.HTMLCanvasElement.prototype.getContext;
-  } else {
-    getContext2D.internal = win.HTMLCanvasElement.prototype.getContext.internal;
+  let htmlCanvasElementProtype = HTMLCanvasElement.prototype;
+  if (win?.HTMLCanvasElement?.prototype) {
+    htmlCanvasElementProtype = win?.HTMLCanvasElement?.prototype;
   }
-  win.HTMLCanvasElement.prototype.getContext = getContext2D;
+
+  if (!jest.isMockFunction(htmlCanvasElementProtype.getContext)) {
+    getContext2D.internal = htmlCanvasElementProtype.getContext;
+  } else {
+    getContext2D.internal = htmlCanvasElementProtype.getContext.internal;
+  }
+  htmlCanvasElementProtype.getContext = getContext2D;
 
   /**
    * This function technically throws SecurityError at runtime, but it cannot be mocked, because
@@ -73,12 +78,12 @@ export default function mockPrototype(win) {
     setTimeout(() => callback(blob), 0);
   });
 
-  if (!jest.isMockFunction(win.HTMLCanvasElement.prototype.toBlob)) {
-    toBlobOverride.internal = win.HTMLCanvasElement.prototype.toBlob;
+  if (!jest.isMockFunction(htmlCanvasElementProtype.toBlob)) {
+    toBlobOverride.internal = htmlCanvasElementProtype.toBlob;
   } else {
-    toBlobOverride.internal = win.HTMLCanvasElement.prototype.toBlob.internal;
+    toBlobOverride.internal = htmlCanvasElementProtype.toBlob.internal;
   }
-  win.HTMLCanvasElement.prototype.toBlob = toBlobOverride;
+  htmlCanvasElementProtype.toBlob = toBlobOverride;
 
   /**
    * This section creates a dataurl with a validated mime type. This is not actually valid, because
@@ -103,11 +108,10 @@ export default function mockPrototype(win) {
     return 'data:' + type + ';base64,00';
   });
 
-  if (!jest.isMockFunction(win.HTMLCanvasElement.prototype.toDataURL)) {
-    toDataURLOverride.internal = win.HTMLCanvasElement.prototype.toDataURL;
+  if (!jest.isMockFunction(htmlCanvasElementProtype.toDataURL)) {
+    toDataURLOverride.internal = htmlCanvasElementProtype.toDataURL;
   } else {
-    toDataURLOverride.internal =
-      win.HTMLCanvasElement.prototype.toDataURL.internal;
+    toDataURLOverride.internal = htmlCanvasElementProtype.toDataURL.internal;
   }
-  win.HTMLCanvasElement.prototype.toDataURL = toDataURLOverride;
+  htmlCanvasElementProtype.toDataURL = toDataURLOverride;
 }
