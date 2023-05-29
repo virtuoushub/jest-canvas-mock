@@ -1,3 +1,6 @@
+import mockPrototype from '../../src/mock/prototype';
+import mockWindow from '../../src/window';
+
 let canvas;
 
 beforeEach(() => {
@@ -116,5 +119,11 @@ describe('mock', () => {
     const first = canvas.getContext('2d');
     const second = canvas.getContext('2d');
     expect(first).toBe(second);
+  });
+
+  it('should work in casses were passed in window object does not have .HTMLCanvasElement.prototype', () => {
+    const foo = mockPrototype();
+    const mockWin = mockWindow({ document: {} });
+    const bar = mockPrototype(mockWin);
   });
 });
